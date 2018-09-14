@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "74323035485",
+    "firebase_url": "https://semudik-97e6e.firebaseio.com",
+    "project_id": "semudik-97e6e",
+    "storage_bucket": "semudik-97e6e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:74323035485:android:2da2a2415df7d24d",
+        "android_client_info": {
+          "package_name": "glory.semudik"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "74323035485-dgvtigj8ma9ipbnsdc7lopo6vp7f2efn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "glory.semudik",
+            "certificate_hash": "ea6e4d451b776339d2b6ce82d3e7bf3bcf25299f"
+          }
+        },
+        {
+          "client_id": "74323035485-pq4voj94pk7e17afvbi1a9v4veaii8mn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDg4CwU3NUWUIywTB0QRZzlaAN-Fa4c6pI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "74323035485-pq4voj94pk7e17afvbi1a9v4veaii8mn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Semudik</string>
+    <string name="user_profile_photo">https://res.cloudinary.com/tapisdev/image/upload/v1531442590/badgeSkyAngel.png</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="title_activity_beranda">BerandaActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+</resources>
