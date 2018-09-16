@@ -2,6 +2,8 @@ package Fragment;
 
 
 import android.Manifest;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -10,6 +12,7 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
@@ -52,13 +55,19 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 
+import Module.DirectionKobal;
 import Module.DirectionKobalListener;
 import Module.Route;
 import Module.SharedVariable;
+import glory.semudik.AlarmReceiver;
 import glory.semudik.R;
+
+import static android.content.Context.ALARM_SERVICE;
 
 
 /**
@@ -77,6 +86,7 @@ public class FragmentMaps extends Fragment implements OnMapReadyCallback, Locati
     Intent i;
     Firebase Kref;
     public static List<String> list_keyDriver = new ArrayList();
+    public static List<String> list_emailID = new ArrayList();
     int iconMarker = R.drawable.marker_semudik;
     private Button btnCari;
     private Double min;
@@ -100,6 +110,7 @@ public class FragmentMaps extends Fragment implements OnMapReadyCallback, Locati
     private List<String> LatLngDriver = new ArrayList<>();
     private List<Double> list_jarak = new ArrayList<>();
     private List<LatLng> list_LatLng = new ArrayList<>();
+    private Double lat,lon, userLon,userLat;
 
     private double latitud, longitud;
     private LocationManager locationManager;
@@ -111,8 +122,10 @@ public class FragmentMaps extends Fragment implements OnMapReadyCallback, Locati
     DatabaseReference ref,refUser;
     private FirebaseAuth fAuth;
     private FirebaseAuth.AuthStateListener fStateListener;
-
-
+    int a,b,c;
+    Date calNow;
+    Calendar calSet,calBanding;
+    final static int RQS1 = 1;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -127,14 +140,14 @@ public class FragmentMaps extends Fragment implements OnMapReadyCallback, Locati
 
         progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
         btnRefresh = view.findViewById(R.id.btnRefresh);
+        tvDistance = view.findViewById(R.id.tvDistance);
+        tvDuration = view.findViewById(R.id.tvDuration);
         btnRefresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 ambilLokasiTeman();
             }
         });
-
-
 
         final FragmentManager manager = getFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
@@ -230,7 +243,22 @@ public class FragmentMaps extends Fragment implements OnMapReadyCallback, Locati
        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
            @Override
            public void onInfoWindowClick(final Marker marker) {
+               marker_ghost = marker;
 
+              // Toast.makeText(getActivity(),"Tess",Toast.LENGTH_SHORT).show();
+
+               String emailId = marker.getTitle();
+               int jml = list_emailID.size();
+               if (list_emailID.contains(emailId)){
+                   for (int c=0;c<jml;c++){
+                       if (list_emailID.get(c).equals(emailId)){
+
+                           Double latt = list_LatLng.get(c).latitude;
+                           Double lonnnn = list_LatLng.get(c).longitude;
+                           sendRequest(latt,lonnnn);
+                       }
+                   }
+               }
 
            }
        });
@@ -246,6 +274,7 @@ public class FragmentMaps extends Fragment implements OnMapReadyCallback, Locati
                 @Override
                 public void onDataChange(com.google.firebase.database.DataSnapshot dataSnapshot) {
                     list_LatLng.clear();
+                    list_emailID.clear();
                     String key = "";
                     int c = 0;
                     int d= 0;
@@ -257,6 +286,7 @@ public class FragmentMaps extends Fragment implements OnMapReadyCallback, Locati
 
                             if (SharedVariable.list_key_friend.get(a).equals(key)){
                                 String nama = (String) child.child("displayName").getValue();
+                                String emailId = (String) child.child("id").getValue();
                                 String latlon = (String) child.child("latlon").getValue();
                                 String status = child.child("status").getValue().toString();
                                 String sublon = latlon.substring(latlon.indexOf(",")+1);
@@ -267,13 +297,41 @@ public class FragmentMaps extends Fragment implements OnMapReadyCallback, Locati
                                 Double lon = Double.valueOf(sublon);
                                 LatLng posisiTeman  = new LatLng(lat,lon);
                                 list_LatLng.add(posisiTeman);
+                                list_emailID.add(emailId);
 
                                 mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(iconMarker))
                                         .position(posisiTeman)
-                                        .title(nama)).setSnippet("Status : "+status);
+                                        .title(emailId)).setSnippet("Status "+nama+ " : "+status);
 
                                 if (!status.equals("aman")){
                                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(posisiTeman,15));
+
+                                    //kirim notif
+                                    calNow = Calendar.getInstance().getTime();
+                                    calSet = Calendar.getInstance();
+                                    calBanding = Calendar.getInstance();
+                                    a = calNow.getHours();
+                                    b = calNow.getMinutes();
+                                    c = calNow.getSeconds() + 5;
+                                    calSet.set(Calendar.HOUR_OF_DAY, a);
+                                    calSet.set(Calendar.MINUTE, b);
+                                    calSet.set(Calendar.SECOND, c);
+                                    calSet.set(Calendar.MILLISECOND, 0);
+
+                                    if (calSet.compareTo(calBanding) <= 0) {
+                                        //today set time passed,count to tomorow
+
+                                        calSet.add(Calendar.DATE, 1);
+                                        Log.i("Hasil = ", "<=0");
+                                    } else if (calSet.compareTo(calBanding) > 0) {
+
+                                        Log.i("Hasil = ", " > 0");
+                                    } else {
+
+                                        Log.i("Hasil = ", "else");
+                                    }
+
+                                    setAlarm(calSet,nama);
                                 }
 
                             }
@@ -296,11 +354,7 @@ public class FragmentMaps extends Fragment implements OnMapReadyCallback, Locati
         }
     }
 
-    private void sendRequest(){
 
-
-
-    }
 
     private void kirimRequest(){
 
@@ -316,6 +370,8 @@ public class FragmentMaps extends Fragment implements OnMapReadyCallback, Locati
 
         latitud = lat;
         longitud = lng;
+        userLat = lat;
+        userLon = lng;
     }
 
     @Override
@@ -486,6 +542,58 @@ public class FragmentMaps extends Fragment implements OnMapReadyCallback, Locati
             e.printStackTrace();
         }
         return location;
+
+    }
+
+    private void setAlarm(Calendar targetCal,String nama){
+
+        Intent i = new Intent(getActivity(), AlarmReceiver.class);
+        i.putExtra("nama",nama);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(),RQS1,i,0);
+        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(ALARM_SERVICE);
+        //alarmManager.set(AlarmManager.RTC_WAKEUP,targetCal.getTimeInMillis(),pendingIntent);
+
+        if (Build.VERSION.SDK_INT < 23){
+
+            if (Build.VERSION.SDK_INT >= 19){
+                alarmManager.setExact(AlarmManager.RTC_WAKEUP,targetCal.getTimeInMillis(),pendingIntent);
+            }else {
+                alarmManager.set(AlarmManager.RTC_WAKEUP,targetCal.getTimeInMillis(),pendingIntent);
+            }
+
+        }else {
+            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,targetCal.getTimeInMillis(),pendingIntent);
+        }
+    }
+
+    private void sendRequest(Double latTarget,Double lonTarget){
+
+        list_jarak.clear();
+
+        String origin = String.valueOf(userLat) + ","+ String.valueOf(userLon);
+        String destination = String.valueOf(latTarget) + ","+ String.valueOf(lonTarget);
+
+        if (origin.isEmpty()) {
+            Toast.makeText(getActivity(), "Tolong masukkan origin address!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (destination.isEmpty()) {
+            Toast.makeText(getActivity(), "Tolong masukkan destination address!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+//            Toast.makeText(getActivity(),"origin : "+origin+"& destination : "+destination,Toast.LENGTH_SHORT).show();
+
+        try {
+            new DirectionKobal(this, origin, destination).execute();
+            Log.d("origin:",origin);
+            Log.d("destination:",destination);
+
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            Toast.makeText(getActivity(),"Eror Direction : "+e.toString(),Toast.LENGTH_SHORT).show();
+        }
+
 
     }
 }

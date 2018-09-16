@@ -17,23 +17,24 @@ public class AlarmReceiver extends BroadcastReceiver {
     MediaPlayer mp;
     private NotificationManager mManager;
     Intent i;
-    String jarak;
+    String jarak,nama;
 
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        Toast.makeText(context, "Motor Anda dalam bahaya !", Toast.LENGTH_LONG).show();
+        Toast.makeText(context, "Teman Anda dalam bahaya !", Toast.LENGTH_LONG).show();
         mp = MediaPlayer.create(context, R.raw.alarm);
         mp.start();
 
         jarak =  intent.getStringExtra("jarak");
+        nama = intent.getStringExtra("nama");
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
         builder.setSmallIcon(R.drawable.semudik_logo);
-        builder.setContentTitle("Motor dalam bahaya.");//"Notifications Example")
-        builder.setContentText("Jarak Anda Ke Motor  =  "+ jarak);//"This is a test notification");
+        builder.setContentTitle("Teman dalam bahaya.");//"Notifications Example")
+        builder.setContentText("Teman anda   =  "+ nama);//"This is a test notification");
         //Log.d("SV.jarak AR = ",SharedVariable.jarakKeMotor);
-        builder.setTicker("Motor dalam bahaya !");
+        builder.setTicker("Teman dalam bahaya !");
         builder.setSmallIcon(R.drawable.semudik_logo);
 
         Intent notificationIntent = new Intent(context, SplashActivity.class);

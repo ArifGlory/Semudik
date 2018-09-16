@@ -112,7 +112,8 @@ public class BerandaActivity extends AppCompatActivity
             i = new Intent(getApplicationContext(),ListFriendActivity.class);
             startActivity(i);
         } else if (id == R.id.menu_about) {
-
+            i = new Intent(getApplicationContext(),AboutActivity.class);
+            startActivity(i);
         } else if (id == R.id.menu_logout) {
             fAuth.signOut();
             Intent i = new Intent(getApplicationContext(), MainActivity.class);

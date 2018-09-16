@@ -90,16 +90,16 @@ public class TambahFriendActivity extends AppCompatActivity {
                     list_key.add(kunci);
                 }
 
-                if (list_kode_device.contains(fAuth.getCurrentUser().getEmail())){
+            /*    if (list_kode_device.contains(fAuth.getCurrentUser().getEmail())){
                     int jmlDevice = list_kode_device.size();
                     for (int a =0;a<jmlDevice;a++){
-                        if (list_kode_device.get(a).equals(fAuth.getCurrentUser().getEmail())){
+                        if (list_kode_device.get(a).toString().equals(fAuth.getCurrentUser().getEmail())){
                             list_kode_device.remove(a);
                             list_nama.remove(a);
                             list_key.remove(a);
                         }
                     }
-                }
+                }*/
                 hidupkanKomponen();
             }
 

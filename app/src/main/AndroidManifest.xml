@@ -47,7 +47,8 @@
             android:label="@string/title_activity_maps" />
         <activity android:name=".ListFriendActivity" />
         <activity android:name=".TambahFriendActivity" />
-        <activity android:name=".AboutActivity" />
+        <activity android:name=".AboutActivity"
+            android:label="Team Teku Teki"/>
         <activity
             android:name=".BerandaActivity"
             android:label="Semudik"

@@ -14,11 +14,12 @@
 
         <item
             android:id="@+id/menu_about"
+            android:icon="@drawable/information"
             android:title="About" />
 
         <item
             android:id="@+id/menu_logout"
-            android:title="Logut" />
+            android:title="Logout" />
 
     </group>
 
