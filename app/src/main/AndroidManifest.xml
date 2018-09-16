@@ -52,6 +52,11 @@
             android:name=".BerandaActivity"
             android:label="Semudik"
             android:theme="@style/AppTheme.NoActionBar"></activity>
+
+        <receiver
+            android:name=".AlarmReceiver"
+            android:process=":remote" />
+
     </application>
 
 </manifest>

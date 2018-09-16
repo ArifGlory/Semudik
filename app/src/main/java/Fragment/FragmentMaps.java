@@ -126,8 +126,6 @@ public class FragmentMaps extends Fragment implements OnMapReadyCallback, Locati
         list_jarak = new ArrayList<>();
 
         progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
-        tvDistance = view.findViewById(R.id.tvDistance);
-        tvDuration = view.findViewById(R.id.tvDuration);
         btnRefresh = view.findViewById(R.id.btnRefresh);
         btnRefresh.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -273,7 +271,11 @@ public class FragmentMaps extends Fragment implements OnMapReadyCallback, Locati
                                 mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(iconMarker))
                                         .position(posisiTeman)
                                         .title(nama)).setSnippet("Status : "+status);
-                                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(posisiTeman,14));
+
+                                if (!status.equals("aman")){
+                                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(posisiTeman,15));
+                                }
+
                             }
                         }
                        c++;
