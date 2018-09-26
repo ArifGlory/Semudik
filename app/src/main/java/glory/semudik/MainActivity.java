@@ -118,9 +118,7 @@ public class MainActivity extends AppCompatActivity {
         }
         else {
             doLogin(getEmailId,getPassword);
-
         }
-
     }
 
     public  void customToast(String s){

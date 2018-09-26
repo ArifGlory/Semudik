@@ -230,13 +230,13 @@ public class FragmentMaps extends Fragment implements OnMapReadyCallback, Locati
             return;
         }
         mMap.setMyLocationEnabled(true);
-
+        ambilLokasiTeman();
 
 
 
 
         Toast.makeText(getActivity().getApplication(),"Mengambil lokasi..." , Toast.LENGTH_LONG).show();
-        ambilLokasiTeman();
+
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lampung, 14));
 
 
@@ -246,6 +246,7 @@ public class FragmentMaps extends Fragment implements OnMapReadyCallback, Locati
                marker_ghost = marker;
 
               // Toast.makeText(getActivity(),"Tess",Toast.LENGTH_SHORT).show();
+               mMap.clear();
 
                String emailId = marker.getTitle();
                int jml = list_emailID.size();
@@ -267,7 +268,7 @@ public class FragmentMaps extends Fragment implements OnMapReadyCallback, Locati
     }
 
     public void ambilLokasiTeman(){
-        mMap.clear();
+//        mMap.clear();
         try{
             progressBar.setVisibility(View.VISIBLE);
             ref.child("users").addValueEventListener(new com.google.firebase.database.ValueEventListener() {
@@ -275,6 +276,7 @@ public class FragmentMaps extends Fragment implements OnMapReadyCallback, Locati
                 public void onDataChange(com.google.firebase.database.DataSnapshot dataSnapshot) {
                     list_LatLng.clear();
                     list_emailID.clear();
+                    SharedVariable.list_status_friend.clear();
                     String key = "";
                     int c = 0;
                     int d= 0;
@@ -298,6 +300,7 @@ public class FragmentMaps extends Fragment implements OnMapReadyCallback, Locati
                                 LatLng posisiTeman  = new LatLng(lat,lon);
                                 list_LatLng.add(posisiTeman);
                                 list_emailID.add(emailId);
+                                SharedVariable.list_status_friend.add(status);
 
                                 mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(iconMarker))
                                         .position(posisiTeman)

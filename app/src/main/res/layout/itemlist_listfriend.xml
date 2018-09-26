@@ -51,6 +51,17 @@
                 android:textColor="@color/primary_text_default_material_light"
                 android:textSize="20dp" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"
+                android:text="Status"
+                android:id="@+id/txtStatus"
+                android:textColor="@color/primary_text_default_material_light"
+                android:textStyle="bold"
+                style="@android:style/TextAppearance.Medium"/>
+
 
         </LinearLayout>
 

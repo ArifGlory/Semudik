@@ -1,13 +1,18 @@
 package Adapter;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.firebase.client.Firebase;
 import com.google.firebase.FirebaseApp;
@@ -22,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import Module.SharedVariable;
+import glory.semudik.BerandaActivity;
 import glory.semudik.ListFriendActivity;
 import glory.semudik.R;
 
@@ -42,6 +48,7 @@ public class RecycleAdapterListFriend extends RecyclerView.Adapter<RecycleViewHo
     DatabaseReference ref;
     private FirebaseAuth fAuth;
     private FirebaseAuth.AuthStateListener fStateListener;
+    DialogInterface.OnClickListener listener;
 
 
     public RecycleAdapterListFriend(final Context context) {
@@ -99,6 +106,7 @@ public class RecycleAdapterListFriend extends RecyclerView.Adapter<RecycleViewHo
         //holder.txtPlatNomor.setText(plat[position].toString());
         //holder.contentWithBackground.setGravity(Gravity.LEFT);
        holder.txtNama.setText(SharedVariable.list_nama_friend.get(position).toString());
+        holder.txtStatus.setText(SharedVariable.list_status_friend.get(position).toString());
 
 
         holder.cardlist_item.setOnClickListener(clicklistener);
@@ -117,9 +125,42 @@ public class RecycleAdapterListFriend extends RecyclerView.Adapter<RecycleViewHo
         public void onClick(View v) {
 
             RecycleViewHolderListFriend vHolder = (RecycleViewHolderListFriend) v.getTag();
-            int position = vHolder.getPosition();
-           // Toast.makeText(context.getApplicationContext(), "Item diklik", Toast.LENGTH_SHORT).show();
+            final int position = vHolder.getPosition();
+          //  Toast.makeText(context.getApplicationContext(), "Key  : "+SharedVariable.list_key_friend.get(position).toString(),Toast.LENGTH_SHORT).show();
 
+            String status = SharedVariable.list_status_friend.get(position).toString();
+            if (status.equals("aman")){
+                Toast.makeText(context.getApplicationContext(), "Teman Anda dalam kondisi aman",Toast.LENGTH_SHORT).show();
+
+            }else {
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setMessage("Ingin merubah status kondisi teman menjadi aman ?");
+                builder.setCancelable(false);
+
+                listener = new DialogInterface.OnClickListener()
+                {
+                    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if(which == DialogInterface.BUTTON_POSITIVE){
+                            Toast.makeText(context.getApplicationContext(), "Status teman diubah",Toast.LENGTH_SHORT).show();
+                           ref.child("users").child(SharedVariable.list_key_friend.get(position)).child("status").setValue("aman");
+                            i = new Intent(context.getApplicationContext(), BerandaActivity.class);
+                            context.startActivity(i);
+
+                        }
+
+                        if(which == DialogInterface.BUTTON_NEGATIVE){
+                            dialog.cancel();
+                        }
+                    }
+                };
+                builder.setPositiveButton("Ya",listener);
+                builder.setNegativeButton("Tidak", listener);
+                builder.show();
+
+            }
 
         }
     };

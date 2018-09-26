@@ -96,6 +96,7 @@ public class SplashActivity extends AppCompatActivity {
                     for (DataSnapshot child : dataSnapshot.getChildren()){
                         idFriend = child.child("idFriend").getValue().toString();
                         namaFriend = child.child("namaFriend").getValue().toString();
+
                         key = child.getKey();
 
                         SharedVariable.list_friend.add(idFriend);

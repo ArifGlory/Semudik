@@ -46,6 +46,7 @@ public class BerandaActivity extends AppCompatActivity
         FragmentMaps mapsFragment = new FragmentMaps();
         android.support.v4.app.FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.fragmen_home, mapsFragment);
+        //fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
